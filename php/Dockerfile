@@ -97,21 +97,20 @@ RUN set -ex \
   # link php-fpm command
   && ln -s /usr/sbin/php-fpm${ENV_PHP_VERSION} /usr/sbin/php-fpm \
   # make root path
-  && mkdir -p /home/nginx/http.d/ && mkdir -p /home/nginx/conf.d/ && mkdir -p /home/wwwroot \
+  && mkdir -p /app/nginx/http.d/ && mkdir -p /app/nginx/conf.d/ && mkdir -p /app/wwwroot \
   && mkdir -p /run/nginx
 
-COPY ./nginx/conf.d/default.conf /home/nginx/conf.d/default.conf
-COPY ./nginx/http.d/default.conf /home/nginx/http.d/default.conf
+COPY ./nginx/conf.d/default.conf /app/nginx/conf.d/default.conf
+COPY ./nginx/http.d/default.conf /app/nginx/http.d/default.conf
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 COPY ./php-fpm/php-fpm.conf /etc/php${ENV_PHP_VERSION}/php-fpm.d/www.conf.99.conf
-COPY ./wwwroot/index.php /home/wwwroot/index.php
-
+COPY ./wwwroot/index.php /app/wwwroot/index.php
 COPY ./entrypoint.sh /docker/entrypoint.sh
 
-WORKDIR /home/wwwroot
-RUN chown -R nginx:nginx /home/wwwroot
+RUN chown -R nginx:nginx /app/wwwroot
 
-VOLUME [ "/home" ]
+WORKDIR /app
+VOLUME [ "/app" ]
 EXPOSE 80
 
 ENTRYPOINT [ "sh", "/docker/entrypoint.sh" ]
